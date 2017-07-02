@@ -1,0 +1,11 @@
+language: node_js
+node_js: node
+services:
+- postgres
+deploy:
+  provider: heroku
+  api_key:
+    secure: O6SMBdrkpKkHbC+nwR76a91y0XENmGrIaNmibcKyNfJOeflKag3iU37ZC9sLWU9nvCQ8RYL2z0YoIyHBx3eRDyatxFOFZTIO37quebvLAOj85KwuA55IjzgsklXG8SI/uTeisgLYZoFLiXYsqSa+Qhw9nEN4vxH4ssT5il5Sr85CgN4gctwg8FUNZegeNFIJQJUmtELDhHGlPF5Wi9NSA6EpsWPw1tqgeX0PCSitTPcy1E0h52CtKVZBSIPYrq6y/aupx3M/7FCS7p+Kvl6Ft4ca76LJWfOwcycFsG2izAoQ7t9RhF9kGR48LcXtPxetCQ4J2aZ+5KeHu3HltQA6scKq/yOUy/HqKTQmSqeU0GYWuzcSLll1Em3w/NMnYhwEIEkZwS7Rg4XZ7KHzS3kHC9SsR4JqL4hCRkfve1quVtB2pVQuqqS1XTD6//uoBWbM8xhj4th+olqhGX2SHrabYTV6rt0JSSsH7Fi9E2/2ROW80sTVY6NgvireDoVlgzi39tgJR86sEMIeWl7t0GFacq4MAhFxuYgp0u7uYCS2NBIAlh1tu5JyuBdb86/a9iNRs9d/oHRcNpNkzghwiJUFoTA0JUCIPo9U0jvEDiW0UdmNKyHTV+7LjcOk+Gz3lBnIk2dwxKLrp+PA3kc8lUOkni+mXT1WIKOY25GABz7nrDA=
+  app: hospitalert-api
+  on:
+    repo: Ljyockey/hospitalert-api
