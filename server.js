@@ -1,18 +1,44 @@
-const express = require('express');
-const app = express();
+'use strict';
 
-const PORT =  process.env.PORT || 3000;
+const sequelize = require('./db/sequelize');
+const app = require('./app');
 
-app.get('/api/*', (req, res) => {
-	res.json({ok: true});
-});
+const {PORT} = require('./config');
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+let server;
 
-app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
+function runServer(port) {
+  return new Promise((resolve, reject) => {
+    try {
+      server = app.listen(port, () => {
+        console.log(`App listening on port ${port}`);
+        resolve();
+      });
+    }
+    catch (err) {
+      console.error(`Can't start server: ${err}`);
+      reject(err);
+    }
+  });
+}
 
-module.exports = {app};
+function closeServer() {
+  return new Promise((resolve, reject) => {
+    console.log('Closing server');
+    server.close(err => {
+      if (err) {
+        return reject(err);
+      }
+      resolve();
+    });
+  });
+}
+
+if (require.main ===module) {
+  runServer(PORT).catch(err => {
+    console.error(`Can't start server: ${err}`);
+    throw err;
+  });
+}
+
+module.exports = {runServer, closeServer};
