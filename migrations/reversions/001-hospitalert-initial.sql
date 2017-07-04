@@ -1,7 +1,7 @@
 BEGIN;
 
-DROP TABLE users;
 DROP TABLE friends;
 DROP TABLE hospitalizations;
+DROP TABLE users;
 
 COMMIT;

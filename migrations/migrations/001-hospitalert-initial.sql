@@ -5,11 +5,15 @@ CREATE TABLE users (
 	created_at TIMESTAMP,
 	updated_at TIMESTAMP,
 	email TEXT NOT NULL,
+	password TEXT NOT NULL,
 	name TEXT NOT NULL,
 	fb_id TEXT
 );
 
 CREATE TABLE friends (
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP,
+	updated_at TIMESTAMP,
 	user_id INTEGER REFERENCES users ON DELETE CASCADE NOT NULL,
 	friend_id INTEGER REFERENCES users ON DELETE CASCADE NOT NULL,
 	status TEXT NOT NULL 
@@ -18,10 +22,11 @@ CREATE TABLE friends (
 CREATE TABLE hospitalizations (
 	id SERIAL PRIMARY KEY,
 	created_at TIMESTAMP,
-	updated_at TIMESTAMP
+	updated_at TIMESTAMP,
 	user_id INTEGER REFERENCES users ON DELETE CASCADE NOT NULL,
 	patient TEXT NOT NULL,
 	condition TEXT NOT NULL,
+	conscious BOOLEAN,
 	latest_update TEXT,
 	is_a_form BOOLEAN DEFAULT false
 );
