@@ -1,4 +1,4 @@
-'use strict';
+
 
 const Sequelize = require('sequelize');
 const {sequelize} = require('../db/sequelize');
@@ -21,34 +21,33 @@ const Hospitalization = sequelize.define('Hospitalization', {
   },
   isAForm: {
     type: Sequelize.BOOLEAN,
-    field: 'is_a_form'
+    field: 'is_a_form',
+    defaultValue: true
   }
 },
 {
   tableName: 'hospitalizations',
-  underscored: true,
-  classMethods: {
-    associate: function(models) {
-      Hospitalization.belongsTo(models.User, {
-        foreignKey: {
-          allowNull: false
-        },
-        onDelete: 'CASCADE'
-      });
-    }
-  },
-  instanceMethods: {
-    apiRepr: function() {
-      return {
-        id: this.id,
-        patient: this.patient,
-        condition: this.condition,
-        conscious: this.conscious,
-        latestUpdate: this.latestUpdate,
-        isAForm: this.isAForm
-      };
-    }
-  }
+  underscored: true
 });
+
+Hospitalization.associate = function(models) {
+  Hospitalization.belongsTo(models.User, {
+    foreignKey: {
+      allowNull: false
+    },
+    onDelete: 'CASCADE'
+  });
+};
+
+Hospitalization.prototype.apiRepr = function() {
+  return {
+    id: this.id,
+    patient: this.patient,
+    condition: this.condition,
+    conscious: this.conscious,
+    latestUpdate: this.latestUpdate,
+    isAForm: this.isAForm
+  };
+};
 
 module.exports = {Hospitalization};
