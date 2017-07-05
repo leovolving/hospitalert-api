@@ -42,6 +42,7 @@ Hospitalization.associate = function(models) {
 Hospitalization.prototype.apiRepr = function() {
   return {
     id: this.id,
+    user_id: this.user_id,
     patient: this.patient,
     condition: this.condition,
     conscious: this.conscious,
