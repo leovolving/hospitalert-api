@@ -22,6 +22,7 @@ Friend.associate = function(models) {
     onDelete: 'CASCADE'
   });
   Friend.belongsTo(models.User, {
+    as: 'friend',
     foreignKey: {
       allowNull: false
     },
@@ -33,7 +34,8 @@ Friend.prototype.apiRepr = function() {
   return {
     id: this.id,
     user_id: this.user_id,
-    friend_id: this.friend_id
+    friend_id: this.friend_id,
+    status: this.status
   };
 };
 

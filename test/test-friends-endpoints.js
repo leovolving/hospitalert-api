@@ -21,33 +21,33 @@ describe('Users API resource', function() {
     return dropTables();
   });
 
-  describe('GET endpoints: friends', function() {
+  // describe('GET endpoints: friends', function() {
 
-    it('should return all friends', function() {
-      return chai.request(app)
-        .get('/friends')
-        .then(function(res) {
-          res.should.have.status(200);
-          res.should.be.a('object');
-        });
-    });
+  //   it('should return all friends', function() {
+  //     return chai.request(app)
+  //       .get('/friends')
+  //       .then(function(res) {
+  //         res.should.have.status(200);
+  //         res.should.be.a('object');
+  //       });
+  //   });
 
-    it('should retrieve friends of specific user', function() {
-      let user;
-      return User.findOne()
-        .then(function(_user) {
-          user = _user;
-          return chai.request(app)
-            .get(`/friends/${user.id}`)
-        })
-        .then(function(res) {
-          res.should.have.status(200);
-          res.body.friends.should.be.a('array');
-          res.body.friends[0].user_id.should.equal(user.id);
-        });
-    });
+  //   it('should retrieve friends of specific user', function() {
+  //     let user;
+  //     return User.findOne()
+  //       .then(function(_user) {
+  //         user = _user;
+  //         return chai.request(app)
+  //           .get(`/friends/${user.id}`)
+  //       })
+  //       .then(function(res) {
+  //         res.should.have.status(200);
+  //         res.body.friends.should.be.a('array');
+  //         res.body.friends[0].user_id.should.equal(user.id);
+  //       });
+  //   });
 
-  });
+  // });
 
   describe('POST endpoints', function() {
     it('should add new friend', function() {
@@ -56,17 +56,18 @@ describe('Users API resource', function() {
       };
       return User.findOne()
         .then(function(user) {
-          console.log(user);
           newFriend.user_id = user.id;
           return User.findOne()
         })
         .then(function(_friend) {
           newFriend.friend_id = _friend.id;
+          console.log(newFriend);
           return chai.request(app)
             .post('/friends').send(newFriend)
         })
         .then(function(res) {
           res.should.have.status(201);
+          console.log(res.body);
           res.body.user_id.should.equal(newFriend.user_id);
           res.body.friend_id.should.equal(newFriend.friend_id);
           res.body.status.should.equal(newFriend.status);
@@ -74,45 +75,46 @@ describe('Users API resource', function() {
     });
   });
 
-  describe('PUT endpoints: friends', function() {
+  // describe('PUT endpoints: friends', function() {
 
-    it('should update status of friend', function() {
-      let friend;
-      Friend.findOne()
-        .then(function(_friend) {
-          friend = _friend;
-          return chai.request(app)
-            .put(`/friends/${friend.id}`).send({
-              status: 'active'
-            })
-        })
-        .then(function(res) {
-          res.status.should.equal(204);
-          console.log(friend);
-          return Friend.findOne({where: {id: friend.id}})
-        })
-        .then(function(res) {
-          res.status.should.equal('active');
-        });
-    });
+  //   it('should update status of friend', function() {
+  //     let friend;
+  //     return Friend.findOne()
+  //       .then(function(_friend) {
+  //         friend = _friend;
+  //         return chai.request(app)
+  //           .put(`/friends/${friend.id}`).send({
+  //             status: 'active'
+  //           })
+  //       })
+  //       .then(function(res) {
+  //         res.status.should.equal(204);
+  //         return Friend.findOne({where: {id: friend.id}})
+  //       })
+  //       .then(function(foo) {
+  //         foo.status.should.equal('active');
+  //       });
+  //   });
 
-  });
+  // });
 
-  describe('DELETE endpoints: friends', function() {
-    let friend;
-    return Friend.findOne()
-      .then(function(_friend) {
-        friend = _friend;
-        return chai.request(app)
-          .delete(`/friends/${friend.id}`)
-      })
-      .then(function(res) {
-        res.should.have.staus(204);
-        return Friend.findOne({where: {id: friend.id}})
-      })
-      .then(function(res) {
-        should.not.exist(res);
-      });
-  });
+  // describe('DELETE endpoints: friends', function() {
+  //   it('should delete friend', function() {
+  //     let friend;
+  //     return Friend.findOne()
+  //       .then(function(_friend) {
+  //         friend = _friend;
+  //         return chai.request(app)
+  //           .delete(`/friends/${friend.id}`)
+  //       })
+  //       .then(function(res) {
+  //         res.should.have.status(204);
+  //         return Friend.findOne({where: {id: friend.id}})
+  //       })
+  //       .then(function(res) {
+  //         should.not.exist(res);
+  //       });
+  //   });
+  // });
 
 });
