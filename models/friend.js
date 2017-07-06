@@ -3,7 +3,13 @@
 const Sequelize = require('sequelize');
 const {sequelize} = require('../db/sequelize');
 
-const Friend = sequelize.define('Friend', {},{
+const Friend = sequelize.define('Friend', {
+  status: {
+    type: Sequelize.TEXT,
+    allowNull: false
+  }
+},
+{
   tableName: 'friends',
   underscored: true
 });
