@@ -1,9 +1,35 @@
 'use strict';
 
+const {BasicStrategy} = require('passport-http');
 const express = require('express');
+const jsonParser = require('body-parser').json();
+const passport = require('passport');
 const router = express.Router();
 
 const {User, Friend, Hospitalization} = require('../models');
+
+//basic strategy for authentication
+const basicStrategy = new BasicStrategy((username, password, callback) => {
+  let user;
+  User
+    .findOne({where: {email: username}})
+    .then(_user => {
+      user = _user;
+      if (!user) {
+        return callback(null, false, {message: 'Incorrect username'});
+      }
+      const isValid = (user.password.trim() === password.trim());
+      if (!isValid) {
+        return callback(null, false, {message: 'Incorrect password'});
+      }
+      else {
+        return callback(null, user)
+      }
+    });
+});
+
+passport.use(basicStrategy);
+router.use(passport.initialize());
 
 //GET requests
 router.get('/', (req, res) => User.findAll()
@@ -11,8 +37,8 @@ router.get('/', (req, res) => User.findAll()
   	user.apiRepr())}))
 );
 
-router.get('/:id', (req, res) => User.findById(req.params.id)
-  .then(user => res.json(user.apiRepr())));
+router.get('/dashboard', passport.authenticate('basic', {session: false}), (req, res) => 
+    res.json(req.user.apiRepr()));
 
 
 //POST request
