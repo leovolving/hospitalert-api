@@ -32,20 +32,6 @@ describe('Users API resource', function() {
         });
     });
 
-    it('should return user by ID', function() {
-      let user;
-      return User.findOne()
-        .then(function(_user) {
-          user = _user;
-          return chai.request(app)
-            .get(`/users/${user.id}`);
-        })
-        .then(function(res) {
-          res.should.have.status(200);
-          res.body.id.should.equal(user.id);
-        });
-    });
-
   });
 
   describe('POST requests: users', function() {

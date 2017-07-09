@@ -13,6 +13,8 @@ const TEST_DATABASE_URL = (
 );
 
 module.exports = {
+  APP_ID: '126180944566416',
+  APP_SECRET: '0814de4bafcdf036efa68e3165e34ffe',
   PORT: process.env.PORT || 8080,
   DATABASE_URL: env === 'test' ? TEST_DATABASE_URL : DATABASE_URL,
   SEQUELIZE_OPTIONS: {logging: env === 'test' ? false : console.log}

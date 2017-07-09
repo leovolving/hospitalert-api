@@ -7,7 +7,8 @@ CREATE TABLE users (
 	email TEXT NOT NULL,
 	password TEXT NOT NULL,
 	name TEXT NOT NULL,
-	fb_id TEXT
+	fb_id TEXT,
+	is_logged_in BOOLEAN DEFAULT false
 );
 
 CREATE TABLE friends (

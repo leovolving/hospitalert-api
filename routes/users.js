@@ -4,7 +4,9 @@ const {BasicStrategy} = require('passport-http');
 const express = require('express');
 const jsonParser = require('body-parser').json();
 const passport = require('passport');
+const FacebookStrategy = require('passport-facebook').Strategy;
 const router = express.Router();
+const {APP_ID, APP_SECRET} = require('../config');
 
 const {User, Friend, Hospitalization} = require('../models');
 
@@ -23,22 +25,45 @@ const basicStrategy = new BasicStrategy((username, password, callback) => {
         return callback(null, false, {message: 'Incorrect password'});
       }
       else {
-        return callback(null, user)
+        return callback(null, user);
       }
     });
 });
 
+const facebookStrategy = new FacebookStrategy({
+  clientID: APP_ID,
+  clientSecret: APP_SECRET,
+  callbackURL: 'http://www.example.com/auth/facebook/callback'
+},
+function(accessToken, refreshToken, profile, done) {
+  User.findOrCreate({where: {fbId: profile.id}, defaults: {
+    email: profile.email, name: profile.name}}, 
+  function(err, user) {
+    if (err) { return done(err); }
+    done(null, user);
+  });
+}
+);
+
 passport.use(basicStrategy);
+passport.use(facebookStrategy);
 router.use(passport.initialize());
+
+//facebook auth
+router.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
+
+router.get('/auth/facebook/callback',
+  passport.authenticate('facebook', { successRedirect: '/',
+    failureRedirect: '/login' }));
 
 //GET requests
 router.get('/', (req, res) => User.findAll()
   .then(users => res.json({users: users.map(user =>
-  	user.apiRepr())}))
+    user.apiRepr())}))
 );
 
 router.get('/dashboard', passport.authenticate('basic', {session: false}), (req, res) => 
-    res.json(req.user.apiRepr()));
+  res.json(req.user.apiRepr()));
 
 
 //POST request

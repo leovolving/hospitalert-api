@@ -12,8 +12,7 @@ const User = sequelize.define('User', {
     }
   },
   password: {
-    type: Sequelize.TEXT,
-    allowNull: false
+    type: Sequelize.TEXT
   },
   name: {
     type: Sequelize.TEXT,
@@ -22,6 +21,11 @@ const User = sequelize.define('User', {
   fbId: {
     type: Sequelize.TEXT,
     field: 'fb_id'
+  },
+  isLoggedIn: {
+    type: Sequelize.BOOLEAN,
+    field: 'is_logged_in',
+    defaultValue: false
   }
 },
 {
@@ -50,7 +54,8 @@ User.prototype.apiRepr = function() {
   return {
     id: this.id,
     email: this.email,
-    name: this.name
+    name: this.name,
+    isLoggedIn: this.isLoggedIn
   };
 };
 
