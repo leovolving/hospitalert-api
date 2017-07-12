@@ -48,7 +48,7 @@ router.put('/:id', (req, res) => {
     return res.status(400).send(message);
   }
   const toUpdate = {};
-  const possibleFields = ['conscious', 'latestUpdate', 'isAForm'];
+  const possibleFields = ['conscious', 'condition', 'latestUpdate', 'isAForm'];
   possibleFields.forEach(field => {
     if(field in req.body) {
       toUpdate[field] = req.body[field];
