@@ -22,7 +22,7 @@ const Hospitalization = sequelize.define('Hospitalization', {
   isAForm: {
     type: Sequelize.BOOLEAN,
     field: 'is_a_form',
-    defaultValue: true
+    defaultValue: false
   }
 },
 {
