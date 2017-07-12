@@ -18,7 +18,7 @@ router.get('/:userId', (req, res) => Hospitalization.findAll({
 
 //POST request
 router.post('/', (req, res) => {
-  const requiredFields = ['patient', 'condition', 'user_id'];
+  const requiredFields = ['patient', 'condition'];
   const possibleExtraFields = ['conscious', 'latestUpdate', 'isAForm'];
   requiredFields.forEach(field => {
     if(!(field in req.body)) {
@@ -28,14 +28,14 @@ router.post('/', (req, res) => {
   });
   const newEntry = {
     patient: req.body.patient,
-    condition: req.body.condition,
-    user_id: req.body.user_id
+    condition: req.body.condition
   };
   possibleExtraFields.forEach(field => {
     if(field in req.body) {
       newEntry[field] = req.body[field];
     }
   });
+  newEntry.user_id = (req.body.user_id ? req.body.user_id : 1);
   return Hospitalization.create(newEntry)
     .then(hosp => res.status(201).json(hosp.apiRepr()))
     .catch(err => res.status(500).json({message: 'Internal server error'}));

@@ -11,7 +11,15 @@ const hospitalizationsRouter = require('./routes/hospitalizations');
 const app = express();
 
 app.use(morgan('common'));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(function(req, res, next) {
+  res.set('Access-Control-Allow-Origin','*');
+  res.set('Access-Control-Allow-Methods','OPTIONS,GET,POST');
+  res.set('Access-Control-Allow-Headers','Origin,X-Requested-With,Content-Type,Accept');
+  next();
+});
 
 app.use('/users', usersRouter);
 app.use('/friends', friendsRouter);
