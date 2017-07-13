@@ -7,6 +7,7 @@ const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const router = express.Router();
 const {APP_ID, APP_SECRET} = require('../config');
+const sequelize = require('sequelize');
 
 const {User, Friend, Hospitalization} = require('../models');
 
@@ -64,6 +65,15 @@ router.get('/', (req, res) => User.findAll()
 
 router.get('/dashboard', passport.authenticate('basic', {session: false}), (req, res) => 
   res.json(req.user.apiRepr()));
+
+  //for friend searches
+router.get('/:name', (req, res) => { 
+  const searchParams = req.params.name.trim().toLowerCase();
+  return User.findAll({where: {
+    //makes db item all lowercase and accepts only partial matches
+    name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + searchParams + '%')
+  }})
+    .then(users => res.json({users: users.map(user => user.apiRepr())}))});
 
 
 //POST request
