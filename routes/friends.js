@@ -6,9 +6,13 @@ const router = express.Router();
 const {User, Friend, Hospitalization} = require('../models');
 
 //GET requests
-router.get('/', (req, res) => Friend.findAll()
-  .then(friends => res.json({friends: friends.map(friend =>
-  	friend.apiRepr())})));
+router.get('/', (req, res) => Friend.findAll({
+  include: [
+    {model: User},
+    {model: User, as: 'friend'}
+  ]})
+  .then(friends =>
+    res.json({Friends: friends.map(friend => friend.apiRepr())})));
 
 router.get('/:userId', (req, res) => Friend.findAll({
   where: {user_id: req.params.userId}
@@ -26,7 +30,7 @@ router.post('/', (req, res) => {
   });
   return Friend.create(req.body)
     .then(friend => res.status(201).json(friend.apiRepr()))
-    .catch(err => res.status(500).json({message: 'internal server error'}))
+    .catch(err => res.status(500).json({message: 'internal server error'}));
 });
 
 router.put('/:id', (req, res) => {

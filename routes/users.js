@@ -73,7 +73,8 @@ router.get('/:name', (req, res) => {
     //makes db item all lowercase and accepts only partial matches
     name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + searchParams + '%')
   }})
-    .then(users => res.json({users: users.map(user => user.apiRepr())}))});
+    .then(users => res.json({users: users.map(user => user.apiRepr())}));
+});
 
 
 //POST request
