@@ -34,9 +34,7 @@ Friend.prototype.apiRepr = function() {
   return {
     id: this.id,
     user_id: this.user_id,
-    userName: this.User.name,
     friend_id: this.friend_id,
-    friendName: this.friend.name,
     status: this.status
   };
 };

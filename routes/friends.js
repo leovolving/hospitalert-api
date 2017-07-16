@@ -12,12 +12,22 @@ router.get('/', (req, res) => Friend.findAll({
     {model: User, as: 'friend'}
   ]})
   .then(friends =>
-    res.json({Friends: friends.map(friend => friend.apiRepr())})));
+    res.json({Friends: friends.map(friend => Object.assign({}, friend.apiRepr(), {
+      friendName: friend.friend.name, 
+      userName:friend.User.name})
+    )})));
 
 router.get('/:userId', (req, res) => Friend.findAll({
-  where: {user_id: req.params.userId}
+  where: {user_id: req.params.userId}, include: [
+    {model: User},
+    {model: User, as: 'friend'}
+  ]
 })
-  .then(friends => res.json({friends: friends.map(friend => friend.apiRepr())})));
+  .then(friends => 
+    res.json({friends: friends.map(friend => Object.assign({}, friend.apiRepr(), {
+      friendName: friend.friend.name, 
+      userName:friend.User.name})
+    )})));
 
 //POST request
 router.post('/', (req, res) => {
