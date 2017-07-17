@@ -13,6 +13,7 @@ const {User, Friend, Hospitalization} = require('../models');
 
 //basic strategy for authentication
 const basicStrategy = new BasicStrategy((username, password, callback) => {
+  console.log(username, password);
   let user;
   User
     .findOne({where: {email: username}})
@@ -63,8 +64,8 @@ router.get('/', (req, res) => User.findAll()
     user.apiRepr())}))
 );
 
-router.get('/dashboard', passport.authenticate('basic', {session: false}), (req, res) => 
-  res.json(req.user.apiRepr()));
+router.get('/dashboard', passport.authenticate('basic', {session: false}), (req, res) => {
+  res.json(req.user.apiRepr())});
 
   //for friend searches
 router.get('/:name', (req, res) => { 
