@@ -6,7 +6,7 @@ const jsonParser = require('body-parser').json();
 const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const router = express.Router();
-const {APP_ID, APP_SECRET} = require('../config');
+const {APP_ID, APP_SECRET, CLIENT_URL} = require('../config');
 const sequelize = require('sequelize');
 
 const {User, Friend, Hospitalization} = require('../models');
@@ -35,7 +35,7 @@ const basicStrategy = new BasicStrategy((username, password, callback) => {
 const facebookStrategy = new FacebookStrategy({
   clientID: APP_ID,
   clientSecret: APP_SECRET,
-  callbackURL: 'http://www.example.com/auth/facebook/callback'
+  callbackURL: '/users/auth/facebook/callback'
 },
 function(accessToken, refreshToken, profile, done) {
   User.findOrCreate({where: {fbId: profile.id}, defaults: {
@@ -52,11 +52,17 @@ passport.use(facebookStrategy);
 router.use(passport.initialize());
 
 //facebook auth
-router.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
+router.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'user_friends'] }));
 
 router.get('/auth/facebook/callback',
-  passport.authenticate('facebook', { successRedirect: '/',
-    failureRedirect: '/login' }));
+  passport.authenticate('facebook', { successRedirect: '/users/dashboard',
+    failureRedirect: '/users/login' }));
+
+//redirect back to home page on failure
+router.get('/login', (req, res) => res.redirect(CLIENT_URL));
+
+//redirect to user's dashboard upon success
+router.get('/dashboard', (req, res) => res.redirect(`${CLIENT_URL}/dashboard`));
 
 //GET requests
 router.get('/', (req, res) => User.findAll()
@@ -64,8 +70,11 @@ router.get('/', (req, res) => User.findAll()
     user.apiRepr())}))
 );
 
-router.get('/dashboard', passport.authenticate('basic', {session: false}), (req, res) => {
-  res.json(req.user.apiRepr())});
+//for email/password once that's setup
+// router.get('/dashboard', passport.authenticate('basic', {session: false}), (req, res) => {
+//   res.json(req.user.apiRepr());
+//   res.redirect('/dashboard');
+// });
 
   //for friend searches
 router.get('/:name', (req, res) => { 
