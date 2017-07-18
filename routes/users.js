@@ -35,15 +35,19 @@ const basicStrategy = new BasicStrategy((username, password, callback) => {
 const facebookStrategy = new FacebookStrategy({
   clientID: APP_ID,
   clientSecret: APP_SECRET,
-  callbackURL: '/users/auth/facebook/callback'
+  callbackURL: '/users/auth/facebook/callback',
+  profileFields: ['name', 'id', 'email', 'displayName', 'friends']
 },
 function(accessToken, refreshToken, profile, done) {
   User.findOrCreate({where: {fbId: profile.id}, defaults: {
-    email: profile.email, name: profile.name}}, 
-  function(err, user) {
-    if (err) { return done(err); }
-    done(null, user);
-  });
+    email: profile._json.email, name: profile._json.name, fbId: profile.id}}) 
+    .then(user => {
+      console.log('line 45');
+      return done(user);
+    })
+    .catch(err => {
+      console.log('error, line 49');
+      done(err)});
 }
 );
 
@@ -55,14 +59,20 @@ router.use(passport.initialize());
 router.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'user_friends'] }));
 
 router.get('/auth/facebook/callback',
-  passport.authenticate('facebook', { successRedirect: '/users/dashboard',
-    failureRedirect: '/users/login' }));
+  passport.authenticate('facebook', {
+    failureRedirect: '/users/login',}),
+  function(req, res) {
+    console.log('line 63 req', req);
+    console.log('line 64 res', res);
+  });
 
 //redirect back to home page on failure
 router.get('/login', (req, res) => res.redirect(CLIENT_URL));
 
 //redirect to user's dashboard upon success
-router.get('/dashboard', (req, res) => res.redirect(`${CLIENT_URL}/dashboard`));
+router.get('/dashboard', (req, res) => {
+  console.log('line 72', res);
+  res.redirect(`${CLIENT_URL}/dashboard`);});
 
 //GET requests
 router.get('/', (req, res) => User.findAll()
@@ -76,7 +86,7 @@ router.get('/', (req, res) => User.findAll()
 //   res.redirect('/dashboard');
 // });
 
-  //for friend searches
+//for friend searches
 router.get('/:name', (req, res) => { 
   const searchParams = req.params.name.trim().toLowerCase();
   return User.findAll({where: {

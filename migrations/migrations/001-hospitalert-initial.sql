@@ -5,7 +5,7 @@ CREATE TABLE users (
 	created_at TIMESTAMP,
 	updated_at TIMESTAMP,
 	email TEXT NOT NULL,
-	password TEXT NOT NULL,
+	password TEXT,
 	name TEXT NOT NULL,
 	fb_id TEXT,
 	is_logged_in BOOLEAN DEFAULT false
