@@ -8,6 +8,7 @@ CREATE TABLE users (
 	password TEXT,
 	name TEXT NOT NULL,
 	fb_id TEXT,
+	profile_picture TEXT,
 	is_logged_in BOOLEAN DEFAULT false
 );
 

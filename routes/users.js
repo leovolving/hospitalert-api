@@ -39,15 +39,15 @@ const facebookStrategy = new FacebookStrategy({
   profileFields: ['name', 'id', 'email', 'displayName', 'friends']
 },
 function(accessToken, refreshToken, profile, done) {
-  User.findOrCreate({where: {fbId: profile.id}, defaults: {
+  return User.findOrCreate({where: {fbId: profile.id}, defaults: {
     email: profile._json.email, name: profile._json.name, fbId: profile.id}}) 
     .then(user => {
-      console.log('line 45');
-      return done(user);
+      done(null, user);
     })
     .catch(err => {
       console.log('error, line 49');
-      done(err)});
+      done(err);
+    });
 }
 );
 
@@ -55,15 +55,17 @@ passport.use(basicStrategy);
 passport.use(facebookStrategy);
 router.use(passport.initialize());
 
+//initiate facebook auth
+router.get('/auth', (req, res) => res.redirect('/users/auth/facebook'));
+
 //facebook auth
 router.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'user_friends'] }));
 
 router.get('/auth/facebook/callback',
-  passport.authenticate('facebook', {
-    failureRedirect: '/users/login',}),
+  passport.authenticate('facebook', { session: false,
+    failureRedirect: '/users/login'}),
   function(req, res) {
-    console.log('line 63 req', req);
-    console.log('line 64 res', res);
+    res.json(req.user);
   });
 
 //redirect back to home page on failure
@@ -71,8 +73,21 @@ router.get('/login', (req, res) => res.redirect(CLIENT_URL));
 
 //redirect to user's dashboard upon success
 router.get('/dashboard', (req, res) => {
-  console.log('line 72', res);
-  res.redirect(`${CLIENT_URL}/dashboard`);});
+  console.log('line 75 user', res.user);
+  res.redirect(`${CLIENT_URL}/dashboard`);
+});
+
+//from client-side FB auth
+router.post('/facebook', (req, res) => {
+  return User.findOrCreate({where: {fbId: req.body.id}, defaults: {
+    email: req.body.email,
+    name: req.body.name,
+    fbId: req.body.id,
+    profilePicture: req.body.picture.data.is_silhouette ? null : req.body.picture.data.url
+  }})
+    .then(user => res.json(user[0].fbRepr()))
+    .catch(err => res.status(500).send(err));
+});
 
 //GET requests
 router.get('/', (req, res) => User.findAll()
