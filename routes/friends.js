@@ -18,7 +18,13 @@ router.get('/', (req, res) => Friend.findAll({
     )})));
 
 router.get('/:userId', (req, res) => Friend.findAll({
-  where: {user_id: req.params.userId}, include: [
+  where: {
+    $or: [{
+      friend_id: req.params.userId
+    },
+    {user_id: req.params.userId}]
+  }, 
+  include: [
     {model: User},
     {model: User, as: 'friend'}
   ]
@@ -28,6 +34,19 @@ router.get('/:userId', (req, res) => Friend.findAll({
       friendName: friend.friend.name, 
       userName:friend.User.name})
     )})));
+
+router.get('/new/:id', (req, res) => Friend.findOne({
+  where: {id: req.params.id}, 
+  include: [
+    {model: User},
+    {model: User, as: 'friend'}
+  ]
+})
+  .then(friend => 
+    res.json(Object.assign({}, friend.apiRepr(), {
+      friendName: friend.friend.name, 
+      userName:friend.User.name})
+    )));
 
 //POST request
 router.post('/', (req, res) => {
@@ -39,8 +58,12 @@ router.post('/', (req, res) => {
     }
   });
   return Friend.create(req.body)
-    .then(friend => res.status(201).json(friend.apiRepr()))
-    .catch(err => res.status(500).json({message: 'internal server error'}));
+    .then(friend => 
+      {console.log(friend);
+      res.status(201).json(friend.apiRepr())})
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({message: err});});
 });
 
 router.put('/:id', (req, res) => {

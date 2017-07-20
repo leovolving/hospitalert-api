@@ -34,26 +34,6 @@ describe('Users API resource', function() {
 
   });
 
-  describe('POST requests: users', function() {
-
-    it('should add new user to DB', function() {
-      let newUser;
-      return chai.request(app)
-        .post('/users').send(buildUser())
-        .then(function(res) {
-          newUser = res.body;
-          res.should.have.status(201);
-          return User.findOne({where: {id: newUser.id}});
-        })
-        .then(function(user) {
-          user.id.should.equal(newUser.id);
-          user.name.should.equal(newUser.name);
-          user.email.should.equal(newUser.email);
-        });
-    });
-
-  });
-
   describe('DELETE requests: users', function() {
 
     it('should delete user', function() {

@@ -11,7 +11,6 @@ const sequelize = require('sequelize');
 
 const {User, Friend, Hospitalization} = require('../models');
 
-//basic strategy for authentication
 const basicStrategy = new BasicStrategy((username, password, callback) => {
   console.log(username, password);
   let user;
@@ -32,50 +31,8 @@ const basicStrategy = new BasicStrategy((username, password, callback) => {
     });
 });
 
-const facebookStrategy = new FacebookStrategy({
-  clientID: APP_ID,
-  clientSecret: APP_SECRET,
-  callbackURL: '/users/auth/facebook/callback',
-  profileFields: ['name', 'id', 'email', 'displayName', 'friends']
-},
-function(accessToken, refreshToken, profile, done) {
-  return User.findOrCreate({where: {fbId: profile.id}, defaults: {
-    email: profile._json.email, name: profile._json.name, fbId: profile.id}}) 
-    .then(user => {
-      done(null, user);
-    })
-    .catch(err => {
-      console.log('error, line 49');
-      done(err);
-    });
-}
-);
-
 passport.use(basicStrategy);
-passport.use(facebookStrategy);
 router.use(passport.initialize());
-
-//initiate facebook auth
-router.get('/auth', (req, res) => res.redirect('/users/auth/facebook'));
-
-//facebook auth
-router.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'user_friends'] }));
-
-router.get('/auth/facebook/callback',
-  passport.authenticate('facebook', { session: false,
-    failureRedirect: '/users/login'}),
-  function(req, res) {
-    res.json(req.user);
-  });
-
-//redirect back to home page on failure
-router.get('/login', (req, res) => res.redirect(CLIENT_URL));
-
-//redirect to user's dashboard upon success
-router.get('/dashboard', (req, res) => {
-  console.log('line 75 user', res.user);
-  res.redirect(`${CLIENT_URL}/dashboard`);
-});
 
 //from client-side FB auth
 router.post('/facebook', (req, res) => {
@@ -89,17 +46,19 @@ router.post('/facebook', (req, res) => {
     .catch(err => res.status(500).send(err));
 });
 
+// for email/password
+	  router.get('/dashboard', passport.authenticate('basic', {session: false}), (req, res) => {
+	    res.json(req.user.apiRepr());
+	    res.redirect('/dashboard');
+	  });
+
 //GET requests
 router.get('/', (req, res) => User.findAll()
   .then(users => res.json({users: users.map(user =>
     user.apiRepr())}))
 );
 
-//for email/password once that's setup
-// router.get('/dashboard', passport.authenticate('basic', {session: false}), (req, res) => {
-//   res.json(req.user.apiRepr());
-//   res.redirect('/dashboard');
-// });
+
 
 //for friend searches
 router.get('/:name', (req, res) => { 
@@ -109,38 +68,6 @@ router.get('/:name', (req, res) => {
     name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + searchParams + '%')
   }})
     .then(users => res.json({users: users.map(user => user.apiRepr())}));
-});
-
-
-//POST request
-router.post('/', (req, res) => {
-  const requiredFields = ['email', 'name', 'password'];
-  requiredFields.forEach(item => {
-    if(!(item in req.body)) {
-      const missingContentMessage = `missing ${item} in req.body`;
-      return res.status(400).send(missingContentMessage);
-    }
-  });
-  //checks for existing email
-  return User.findOne({where: {email: req.body.email}})
-    .then(userCheck => {
-      if(userCheck !== null) {
-        const emailExistsMessage = 'email address already taken';
-        return res.status(400).send(emailExistsMessage);
-      } else {
-        const newUser = {
-          email: req.body.email,
-          password: req.body.password,
-          name: req.body.name,
-          fbId: req.body.fbId
-        };
-        return User.create(newUser)
-          .then(user =>
-            res.status(201).json(user.apiRepr()))
-          .catch(err => 
-            res.status(500).json({message: 'internal server error'}));
-      }
-    });
 });
 
 //DELETE request
