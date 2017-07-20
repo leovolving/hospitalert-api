@@ -87,7 +87,7 @@ describe('Users API resource', function() {
             .put(`/hospitalizations/${id}`).send(newItems)
         })
         .then(function(res) {
-          res.should.have.status(204)
+          res.should.have.status(204);
           return Hospitalization.findOne({where: {id: id}})
         })
         .then(function(hosp) {
@@ -109,7 +109,7 @@ describe('Users API resource', function() {
             .delete(`/hospitalizations/${hosp.id}`)
         })
         .then(function(res) {
-          res.should.have.status(204)
+          res.should.have.status(204);
           return Hospitalization.findOne({where: {id: hosp.id}})
         })
         .then(function(res) {

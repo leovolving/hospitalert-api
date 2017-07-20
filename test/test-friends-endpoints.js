@@ -47,6 +47,20 @@ describe('Users API resource', function() {
         });
     });
 
+    it('should retrieve single friend entry', function() {
+      let friend;
+      return Friend.findOne()
+        .then(function(_friend) {
+          friend = _friend;
+          return chai.request(app)
+            .get(`/friends/new/${friend.id}`)
+        })
+        .then(function(res) {
+          res.should.have.status(200);
+          res.body.id.should.equal(friend.id);
+        });
+    });
+
   });
 
   describe('POST endpoints', function() {
@@ -61,13 +75,11 @@ describe('Users API resource', function() {
         })
         .then(function(_friend) {
           newFriend.friend_id = _friend.id;
-          console.log(newFriend);
           return chai.request(app)
             .post('/friends').send(newFriend)
         })
         .then(function(res) {
           res.should.have.status(201);
-          console.log(res.body);
           res.body.user_id.should.equal(newFriend.user_id);
           res.body.friend_id.should.equal(newFriend.friend_id);
           res.body.status.should.equal(newFriend.status);

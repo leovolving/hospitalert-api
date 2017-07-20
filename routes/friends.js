@@ -58,12 +58,8 @@ router.post('/', (req, res) => {
     }
   });
   return Friend.create(req.body)
-    .then(friend => 
-      {console.log(friend);
-      res.status(201).json(friend.apiRepr())})
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({message: err});});
+    .then(friend => res.status(201).json(friend.apiRepr()))
+    .catch(err => res.status(500).json({message: err}));
 });
 
 router.put('/:id', (req, res) => {
