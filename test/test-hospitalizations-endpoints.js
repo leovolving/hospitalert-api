@@ -23,15 +23,6 @@ describe('Users API resource', function() {
 
   describe('GET endpoints: hospitalizations', function() {
 
-    it('should return all hospitalizations', function() {
-      return chai.request(app)
-        .get('/hospitalizations')
-        .then(function(res) {
-          res.should.have.status(200);
-          res.should.be.a('object');
-        });
-    });
-
     it('should return all hospitalizations with specific userId', function() {
       let user;
       return User.findOne()
@@ -76,13 +67,13 @@ describe('Users API resource', function() {
       let id;
       const newItems = {
         conscious: false,
-        latestUpdate: 'wkjqweb wkavq;ow',
-        isAForm: true
+        latestUpdate: 'wkjqweb wkavq;ow'
       };
       return Hospitalization.findOne()
         .then(function(_hosp) {
           id = _hosp.id;
           newItems.id = id;
+          newItems.isAForm = !(_hosp.isAForm);
           return chai.request(app)
             .put(`/hospitalizations/${id}`).send(newItems)
         })

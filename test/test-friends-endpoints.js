@@ -23,15 +23,6 @@ describe('Users API resource', function() {
 
   describe('GET endpoints: friends', function() {
 
-    it('should return all friends', function() {
-      return chai.request(app)
-        .get('/friends')
-        .then(function(res) {
-          res.should.have.status(200);
-          res.should.be.a('object');
-        });
-    });
-
     it('should retrieve friends of specific user', function() {
       let user;
       return User.findOne()

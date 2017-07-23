@@ -6,17 +6,6 @@ const router = express.Router();
 const {User, Friend, Hospitalization} = require('../models');
 
 //GET requests
-router.get('/', (req, res) => Friend.findAll({
-  include: [
-    {model: User},
-    {model: User, as: 'friend'}
-  ]})
-  .then(friends =>
-    res.json({Friends: friends.map(friend => Object.assign({}, friend.apiRepr(), {
-      friendName: friend.friend.name, 
-      userName:friend.User.name})
-    )})));
-
 router.get('/:userId', (req, res) => Friend.findAll({
   where: {
     $or: [{

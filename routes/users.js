@@ -53,12 +53,6 @@ router.post('/facebook', (req, res) => {
 	  });
 
 //GET requests
-router.get('/', (req, res) => User.findAll()
-  .then(users => res.json({users: users.map(user =>
-    user.apiRepr())}))
-);
-
-
 
 //for friend searches
 router.get('/:name', (req, res) => { 

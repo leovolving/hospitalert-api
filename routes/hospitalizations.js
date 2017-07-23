@@ -6,9 +6,6 @@ const router = express.Router();
 const {User, Friend, Hospitalization} = require('../models');
 
 //GET requests
-router.get('/', (req, res) => Hospitalization.findAll()
-  .then(hosps => res.json({hospitalizations: 
-  	hosps.map(hosp => hosp.apiRepr())})));
 
 router.get('/:userId', (req, res) => Hospitalization.findAll({
   where: {user_id: req.params.userId}
