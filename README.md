@@ -2,7 +2,8 @@
 
 https://hospitalert-api.herokuapp.com <br><br>
 
-API for <a href="www.hospitalert.com">HospitAlert</a> built with PostgreSQL and <a href="http://docs.sequelizejs.com/">Sequelize</a>.<br><br>
+API for <a href="www.hospitalert.com">HospitAlert</a> built with PostgreSQL and <a href="http://docs.sequelizejs.com/">Sequelize</a>.
+Find the repo for the client <a href="https://github.com/Ljyockey/hospitalert-client">here</a>.<br><br>
 
 <h2>Tables</h2>
 
