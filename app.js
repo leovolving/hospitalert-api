@@ -3,6 +3,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const morgan = require('morgan');
+const router = express.Router();
 
 const usersRouter = require('./routes/users');
 const friendsRouter = require('./routes/friends');
@@ -24,6 +25,11 @@ app.use(function(req, res, next) {
 app.use('/users', usersRouter);
 app.use('/friends', friendsRouter);
 app.use('/hospitalizations', hospitalizationsRouter);
+
+//GET request to wake up API server in case it is sleeping (hosted on Heroku)
+app.get('/', (req, res) => {
+  return res.status(200).send('Server is awake.');
+});
 
 app.use('*', function(req, res) {
   res.status(404).json({message: 'Not found'});
