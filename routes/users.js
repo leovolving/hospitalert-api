@@ -6,7 +6,6 @@ const jsonParser = require('body-parser').json();
 const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const router = express.Router();
-const {APP_ID, APP_SECRET, CLIENT_URL} = require('../config');
 const sequelize = require('sequelize');
 
 const {User, Friend, Hospitalization} = require('../models');

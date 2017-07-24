@@ -4,6 +4,8 @@ const {runServer, closeServer} = require('../server');
 const {sequelize} = require('../db/sequelize');
 const {User, Hospitalization, Friend} = require ('../models');
 
+//starts server and adds mock data for tests
+
 before(function() {
   return sequelize.sync({force: true})
     .then(() => runServer(PORT));

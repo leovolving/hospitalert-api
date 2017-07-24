@@ -12,7 +12,8 @@ router.get('/:userId', (req, res) => Friend.findAll({
       friend_id: req.params.userId
     },
     {user_id: req.params.userId}]
-  }, 
+  },
+  //to get the friend name and username
   include: [
     {model: User},
     {model: User, as: 'friend'}

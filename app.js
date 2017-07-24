@@ -15,6 +15,7 @@ app.use(morgan('common'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+//allows cross-origin requests
 app.use(function(req, res, next) {
   res.set('Access-Control-Allow-Origin','*');
   res.set('Access-Control-Allow-Methods','OPTIONS,GET,POST,PUT,DELETE');
