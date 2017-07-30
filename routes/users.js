@@ -36,7 +36,7 @@ router.use(passport.initialize());
 //from client-side FB auth
 router.post('/facebook', (req, res) => {
   return User.findOrCreate({where: {fbId: req.body.id}, defaults: {
-    email: req.body.email,
+    email: req.body.email || 'none@none.com',
     name: req.body.name,
     fbId: req.body.id,
     profilePicture: req.body.picture.data.is_silhouette ? null : req.body.picture.data.url
