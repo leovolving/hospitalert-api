@@ -37,9 +37,7 @@ function buildHospitalization(userId) {
 }
 
 function buildFollowers(userId, followerId) {
-  const properties = {
-    status: 'pending'
-  };
+  const properties = {};
   if (userId) {
     properties.user_id = userId;
   }
@@ -72,6 +70,9 @@ function seedUserWithHospAndFollowers() {
         })
         .then(function() {
           return Follower.create(buildFollowers(userOne.id, userTwo.id));
+        })
+        .then(function() {
+          return Follower.create(buildFollowers(userTwo.id, userOne.id));
         });
     });
 }

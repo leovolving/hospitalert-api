@@ -16,6 +16,7 @@ Follower.associate = function(models) {
     onDelete: 'CASCADE'
   });
   Follower.belongsTo(models.User, {
+    as: 'follower',
     foreignKey: {
       allowNull: false
     },
@@ -26,7 +27,7 @@ Follower.associate = function(models) {
 Follower.prototype.apiRepr = function() {
   return {
     id: this.id,
-    user_id: this.user.id,
+    user_id: this.user_id,
     follower_id: this.follower_id
   };
 };

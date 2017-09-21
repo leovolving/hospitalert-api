@@ -20,6 +20,35 @@ describe('Users API resource', function() {
     console.log('dropping tables');
     return dropTables();
   });
-  
+
+  describe('GET endpoints: followers', function() {
+
+    it('should return followers based on userID', function() {
+      let user;
+      return User.findOne()
+        .then(function(_user) {
+          user = _user;
+          return chai.request(app)
+            .get(`/followers/${user.id}`)
+        })
+        .then(function(res) {
+          res.should.have.status(200);
+        });
+    });
+
+    it('should return followings based on fId', function() {
+      let user;
+      return User.findOne()
+        .then(function(_user) {
+          user = _user;
+          return chai.request(app)
+            .get(`/followers/following/${user.id}`)
+        })
+        .then(function(res) {
+          res.should.have.status(200);
+        });
+    });
+
+  });
 
 });
