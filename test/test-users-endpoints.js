@@ -3,8 +3,8 @@ const chaiHttp = require('chai-http');
 const faker = require('faker');
 const should = chai.should();
 const app = require('../app');
-const {User, Hospitalization, Friend} = require('../models');
-const {buildUser, buildHospitalization, buildFriends, dropTables, seedTestData} 
+const {User, Hospitalization, Follower} = require('../models');
+const {buildUser, buildHospitalization, buildFollowers, dropTables, seedTestData} 
 = require('./helper');
 
 chai.use(chaiHttp);

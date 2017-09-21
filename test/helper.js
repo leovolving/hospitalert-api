@@ -2,7 +2,7 @@ const faker = require('faker');
 const {PORT} = require('../config');
 const {runServer, closeServer} = require('../server');
 const {sequelize} = require('../db/sequelize');
-const {User, Hospitalization, Friend} = require ('../models');
+const {User, Hospitalization, Follower} = require ('../models');
 
 //starts server and adds mock data for tests
 
@@ -36,28 +36,28 @@ function buildHospitalization(userId) {
   return properties;
 }
 
-function buildFriends(userId, friendId) {
+function buildFollowers(userId, followerId) {
   const properties = {
     status: 'pending'
   };
   if (userId) {
     properties.user_id = userId;
   }
-  if (friendId) {
-    properties.friend_id = friendId;
+  if (followerId) {
+    properties.follower_id = followerId;
   }
   return properties;
 }
 
 function dropTables() {
   return Promise.all([
-    Friend.truncate(),
+    Follower.truncate(),
     Hospitalization.truncate(),
     User.truncate({cascade: true})
   ]);
 }
 
-function seedUserWithHospAndFriends() {
+function seedUserWithHospAndFollowers() {
   let userOne, userTwo;
   return User.create(buildUser())
     .then(function(_user) {
@@ -71,23 +71,23 @@ function seedUserWithHospAndFriends() {
           return Hospitalization.create(buildHospitalization(userTwo.id));
         })
         .then(function() {
-          return Friend.create(buildFriends(userOne.id, userTwo.id));
+          return Follower.create(buildFollowers(userOne.id, userTwo.id));
         });
     });
 }
 
 function seedTestData() {
-  const usersWithHospsAndFriends = [];
+  const usersWithHospsAndFollowers = [];
   for (let i=0; i<5; i++) {
-    usersWithHospsAndFriends.push(seedUserWithHospAndFriends());
+    usersWithHospsAndFollowers.push(seedUserWithHospAndFollowers());
   }
-  return Promise.all(usersWithHospsAndFriends);
+  return Promise.all(usersWithHospsAndFollowers);
 }
 
 module.exports = {
   buildUser,
   buildHospitalization,
-  buildFriends,
+  buildFollowers,
   dropTables,
   seedTestData
 };

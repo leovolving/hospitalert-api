@@ -1,10 +1,10 @@
 'use strict';
 
 const {User} = require('./user');
-const {Friend} = require('./friend');
+const {Follower} = require('./follower');
 const {Hospitalization} = require('./hospitalization');
 
-const db = {User, Friend, Hospitalization};
+const db = {User, Follower, Hospitalization};
 
 Object.keys(db).forEach(function(model) {
   if(db[model].associate) {

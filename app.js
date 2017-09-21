@@ -6,7 +6,7 @@ const morgan = require('morgan');
 const router = express.Router();
 
 const usersRouter = require('./routes/users');
-const friendsRouter = require('./routes/friends');
+const followersRouter = require('./routes/followers');
 const hospitalizationsRouter = require('./routes/hospitalizations');
 
 const app = express();
@@ -24,7 +24,7 @@ app.use(function(req, res, next) {
 });
 
 app.use('/users', usersRouter);
-app.use('/friends', friendsRouter);
+app.use('/followers', followersRouter);
 app.use('/hospitalizations', hospitalizationsRouter);
 
 //GET request to wake up API server in case it is sleeping (hosted on Heroku)

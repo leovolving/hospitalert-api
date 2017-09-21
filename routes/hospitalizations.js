@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {User, Friend, Hospitalization} = require('../models');
+const {User, Follower, Hospitalization} = require('../models');
 
 //GET requests
 

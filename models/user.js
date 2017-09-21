@@ -45,8 +45,8 @@ User.associate = function(models) {
     },
     onDelete: 'CASCADE'
   }),
-  User.hasMany(models.Friend, {
-    as: 'friends',
+  User.hasMany(models.Follower, {
+    as: 'followers',
     foreignKey: {
       allowNull: false
     },

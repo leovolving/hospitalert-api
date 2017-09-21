@@ -8,7 +8,7 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 const router = express.Router();
 const sequelize = require('sequelize');
 
-const {User, Friend, Hospitalization} = require('../models');
+const {User, Follower, Hospitalization} = require('../models');
 
 const basicStrategy = new BasicStrategy((username, password, callback) => {
   console.log(username, password);
